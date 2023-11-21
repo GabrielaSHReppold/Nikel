@@ -26,16 +26,37 @@ document.getElementById("transaction-form").addEventListener("submit", function(
         value: value, type: type, description: description, date: date
     });
 
-    saveData(data);
-    e.target.reset();
-    myModal.hide();
+    //Descobrir o Saldo
+    let saldo = getTotal()
+    //Testar se o Saldo menos o valor da transaçao é menor que zero
+    if (type === "2" && saldo-value < 0 ) {
+        let continua = confirm("Atenção. Seu saldo após cadastrar esta despesa será negativo, deseja continuar?")
+        if(continua) {
+            saveData(data);
+            e.target.reset();
+            myModal.hide();
+        
+            getCashIn();
+            getCashOut();
+            getTotal();
+        
+            alert("Lançamento adicionado com sucesso.");
+        } else {
+            //Se não, esconde a modal
+            e.target.reset();
+            myModal.hide();
+        }
+    } else {
+        saveData(data);
+        e.target.reset();
+        myModal.hide();
 
-    getCashIn();
-    getCashOut();
-    getTotal();
+        getCashIn();
+        getCashOut();
+        getTotal();
 
-    alert("Lançamento adicionado com sucesso.");
-
+        alert("Lançamento adicionado com sucesso.");
+    }
 });
 
 checkLogged();
@@ -153,6 +174,7 @@ function getTotal() {
     });
 
     document.getElementById("total").innerHTML = `R$ ${total.toFixed(2)}`;
+    return total;
 }
 
 
